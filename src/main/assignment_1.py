@@ -31,15 +31,17 @@ def bisection_method(f, a, b, tol=1e-4):
     return iterations, (a + b) / 2
 
 # 3. Fixed-Point Iteration
-def fixed_point_iteration(g, x0, tol=1e-4, max_iter=100):
+def fixed_point_iteration(g, x0, tol=1e-4, max_iter=50):
     """Fixed-Point Iteration to solve x = g(x)."""
     x_n = x0
-    for _ in range(max_iter):
+    for i in range(max_iter):
         x_next = g(x_n)
         if abs(x_next - x_n) < tol:
             return x_next
+        if abs(x_next) > 1e6:  # Safety condition to prevent runaway values
+            raise ValueError("Fixed-Point Iteration is diverging.")
         x_n = x_next
-    return x_n
+    raise ValueError("Fixed-Point Iteration did not converge within max iterations.")
 
 # 4. Newton-Raphson Method
 def newton_raphson_method(f, f_prime, x0, tol=1e-4, max_iter=100):
@@ -62,7 +64,7 @@ def f_prime(x):
     return 3*x**2 + 8*x  # Derivative of the function
 
 def g(x):
-    return (10 - x**3) / 4  # Example for Fixed-Point Iteration (derived from f(x))
+    return math.pow(10 / (x + 4), 1/3)  # Alternative transformation
 
 # Test inputs
 x0 = 1  # Initial guess for root-finding
